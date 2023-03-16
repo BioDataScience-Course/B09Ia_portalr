@@ -7,6 +7,8 @@ output: html_document
 
 # Schéma de la base de données
 
+## Exploration et normalisation niveau 1
+
 ```{r setup}
 SciViews::R("explore")
 library(dm)
@@ -24,56 +26,64 @@ rodent_dm
 write$rds(rodent_dm, here::here("tests", "rodent_dm.rds"), compress = "xz")
 ```
 
-<!-- Explorez les candidats potentiels afin d'être une clé primaire. Ensuite, ajoutez les clés primaires à chaque table. -->
+<!--% Explorez les tables dans cette base de données. -->
+
+```{r explore}
+# Exploration des candidats potentiels
+
+```
+
+<!--% Indiquez en 4 phrases maximum ce qu'il faudrait faire pour normiliser les donnes dans ces tables au niveau 1 -->
+
+## Normalisation des données au niveau 2
+
+<!--% Identifiez les candidats potentiels afin d'être une clé primaire. Ensuite, ajoutez les clés primaires à chaque table. -->
 
 ```{r primary_keys}
-# Exploration des candidats potentiels
-___
-___
-___
 # Ajout des clés primaires
 rodent_dm %>.%
-  ___(., ___, ___) %>.%
-  ___(., ___, ___) %>.%
-  ___(., ___, ___) -> 
+  ___ %->% 
   rodent_dm1
 rodent_dm1
 # Ne modifiez pas ci-dessous
 write$rds(rodent_dm1, here::here("tests", "rodent_dm1.rds"), compress = "xz")
 ```
 
-<!-- Explorez les candidats potentiels afin d'être une clé étrangère. Ensuite, ajoutez les clés étrangères à chaque table. -->
+<!-- Explorez les candidats potentiels afin d'être des clés étrangère. Ensuite, ajoutez les clés étrangères à chaque table. -->
 
 ```{r foreign_keys}
 # Exploration des candidats potentiels
-___
-___
+
+
 # Ajout des clés étrangères
 rodent_dm1 %>.%
-  ___(., ___, ___,  ___) %>.%
-  ___(., ___, ___, ___) -> 
+  ___ %->% 
   rodent_dm2
 rodent_dm2
 # Ne modifiez pas ci-dessous
 write$rds(rodent_dm2, here::here("tests", "rodent_dm2.rds"), compress = "xz")
 ```
 
-<!--% Définissez une couleur pour chaque table. Le vert pour la table plots. L'orange pour la table species et le rouge pour la table surveys. Réalisez ensuite un graphique montrant les clés entre les tables..-->
+<!--% Définissez une couleur pour chaque table. Le vert pour la table plots. L'orange pour la table species et le rouge pour la table surveys. Réalisez ensuite un graphique montrant le schéma de la base de données (liens entre les tables). -->
 
 ```{r draw}
-rodent_dm3 <- ___(___, green = ___, orange = ___, red = ___)
+rodent_dm3 <- ___
 # Graphique 
 ___(___, view_type = "all")
 ```
 
 <!--% En 3 à 4 phrases, justifiez vos choix de clés primaires et de clés étrangères. -->
 
+## Normalisation niveau 3
+
+<!--% Nous n'irons pas plus loin dans de remaniement de cette base de données. Cependant, expliquez en 2 ou 3 phrases ce qui pourrait éventuellement être fait pour pousser la normalisation des données jusqu'au niveau 3. -->
+
 # Interrogation de la base de données
 
-<!--% En partant de rodent_dm3, collectez uniquement les rongeurs recensés en 2002, dans l'ensemble des parcelles à l'exception des parcelles clôturées afin d'exclure à court terme les rats-kangourous. Nommez cet objet `rodent_red`. Il n'est pas nécessaire de collecter cette instruction. Plusieurs stratégies sont envisageables.  -->
+<!--% En partant de rodent_dm3, collectez uniquement les rongeurs recensés en 2002, dans l'ensemble des parcelles à l'exception des parcelles clôturées afin d'exclure à court terme les rats-kangourous. Nommez cet objet `rodent_red`. Il n'est pas nécessaire de collecter cette instruction. Plusieurs stratégies sont envisageables. -->
 
 ```{r filter}
-___
+___ %->%
 rodent_red
 # Ne modifiez pas ci-dessous
 write$rds(rodent_red, here::here("tests", "rodent_red.rds"), compress = "xz")
@@ -82,13 +92,13 @@ write$rds(rodent_red, here::here("tests", "rodent_red.rds"), compress = "xz")
 <!--% En partant de rodent_red, dénombrez le nombre d'individus pour chaque espèce (species_id) en fonction de la parcelle (plot_id) et du type de parcelles (plot_type). Collectez le résultat dans l'objet rodent_sum. -->
 
 ```{r summarise}
-___
+___ %->%
 rodent_sum
 # Ne modifiez pas ci-dessous
 write$rds(rodent_sum, here::here("tests", "rodent_sum.rds"), compress = "xz")
 ```
 
-<!-- Votre requête est réalisée. Déconnectez-vous de la base de données..-->
+<!-- Votre requête est réalisée. Déconnectez-vous de la base de données. -->
 
 ```{r disconnect}
 
@@ -106,16 +116,15 @@ write$rds(rodent_sum, here::here("tests", "rodent_sum.rds"), compress = "xz")
 
 <!--% Décrivez ce graphique en 3 phrases.-->
 
-<!-- Le tableau que vous avez obtenu nommé `rodent_sum` doit être remanié afin d'obtenir un tableau avec chaque ligne correspond à une station et chaque colonne à une espèce. -->
+<!-- Le tableau que vous avez obtenu nommé `rodent_sum` doit être remanié afin d'obtenir un tableau où chaque ligne correspond à une station et chaque colonne à une espèce. -->
 
 ```{r wider}
 rodent_wider <- pivot_wider(rodent_sum, names_from = ___, values_from = ___, values_fill = ___)
-
 # Ne modifiez pas ci-dessous
 write$rds(rodent_wider, here::here("tests", "rodent_wider.rds"), compress = "xz")
 ```
 
-<!--% Calculez une matrice de distance basée sur le nombre d'individus de chaque espèce par station. Nommez cet objet `dist`. Nous souhaitons donner plus d'importance aux espèces les plus présentes. Choississez l'indice pertinent. -->
+<!--% Calculez une matrice de distance basée sur le nombre d'individus de chaque espèce par station. Nommez cet objet `dist`. Nous souhaitons donner plus d'importance aux espèces les plus présentes. Choississez l'indice le plus pertinent. -->
 
 ```{r dist}
 ___ %->%
@@ -124,27 +133,25 @@ ___ %->%
 write$rds(dist, here::here("tests", "dist.rds"), compress = "xz")
 ```
 
-<!-- Réalisez un mds métrique ou non métrique. Définissez le type de mds à réaliser. Si cela se justifie, réalisé un graphique de Shepard.  -->
+<!-- Réalisez une MDS métrique ou non métrique. Définissez le type de MDS à réaliser. Si cela se justifie, réalisez un graphique de Shepard. -->
 
-```{r}
-# mds ---- 
-rodent_mds <- mds$___(dist)
+```{r mds}
+# MDS 
+rodent_mds <- ___
 
-# Qualité du mds ----
-___(___)
+# Qualité de la MDS
 
-# Graphique de shepard ----
-#sh <- shepard(dist, rodent_mds)
-#chart(sh) +
-#  labs(x = "Dissimilarité observée", y = "Distance sur l'ordination")
+
+# Graphique de Shepard
+
 
 # Ne modifiez pas ci-dessous
 write$rds(rodent_mds, here::here("tests", "rodent_mds.rds"), compress = "xz")
 ```
 
-<!--% Décrivez vos résultats en 3 phrases. Justifiez votre choix de mds. -->
+<!--% Décrivez vos résultats en 3 phrases. Justifiez votre choix de MDS. -->
 
-<!--% Réalisez le graphique associé à votre mds. Ajoutez les types de traitements appliqués grâce à la couleur.  -->
+<!--% Réalisez le graphique de votre MDS. Mettez en évidence les types de traitements appliqués grâce à la couleur.  -->
 
 ```{r chart}
 
