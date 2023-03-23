@@ -29,17 +29,20 @@ write$rds(rodent_dm, here::here("tests", "rodent_dm.rds"), compress = "xz")
 <!--% Explorez les tables dans cette base de données. -->
 
 ```{r explore}
-# Exploration des candidats potentiels
+
 
 ```
 
-<!--% Indiquez en 4 phrases maximum ce qu'il faudrait faire pour normiliser les donnes dans ces tables au niveau 1 -->
+<!--% Indiquez en 4 phrases maximum ce qu'il faudrait faire pour normaliser les données dans ces tables au niveau 1 -->
 
 ## Normalisation des données au niveau 2
 
 <!--% Identifiez les candidats potentiels afin d'être une clé primaire. Ensuite, ajoutez les clés primaires à chaque table. -->
 
 ```{r primary_keys}
+# Exploration des candidats potentiels
+
+
 # Ajout des clés primaires
 rodent_dm %>.%
   ___ %->% 
@@ -49,7 +52,7 @@ rodent_dm1
 write$rds(rodent_dm1, here::here("tests", "rodent_dm1.rds"), compress = "xz")
 ```
 
-<!-- Explorez les candidats potentiels afin d'être des clés étrangère. Ensuite, ajoutez les clés étrangères à chaque table. -->
+<!--% Explorez les candidats potentiels afin d'être des clés étrangères. Ensuite, ajoutez les clés étrangères à chaque table. -->
 
 ```{r foreign_keys}
 # Exploration des candidats potentiels

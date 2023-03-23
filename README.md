@@ -13,16 +13,15 @@ tables :
 1.  La table `plots` reprend des informations sur les traitements
     appliqués sur les parcelles :
 
-    - parcelles témoin (`Control`),
-    - parcelles clôturées pour exclure tous les rongeurs
-      (`Rodent Exclosure`)
-    - parcelles clôturées afin d’exclure à long terme les
-      rats-kangourous (`Long-term Krat Exclosure`)
-    - parcelles clôturées afin d’exclure à court terme les
-      rats-kangourous (`Short-term Krat Exclosure`)
-    - parcelles clôturées pour exclure spécifiquement *Dipdomys
-      spectabilis*, une espèce de rat-kangourou
-      (`Short-term Krat Exclosure`)
+    -   parcelles témoin (`Control`),
+    -   parcelles clôturées pour exclure tous les rongeurs
+        (`Rodent Exclosure`)
+    -   parcelles clôturées afin d’exclure à long terme les
+        rats-kangourous (`Long-term Krat Exclosure`)
+    -   parcelles clôturées afin d’exclure à court terme les
+        rats-kangourous (`Short-term Krat Exclosure`)
+    -   parcelles clôturées pour exclure spécifiquement *Dipdomys
+        spectabilis*, une espèce de rat-kangourou (`Spectab Exclosure`)
 
 2.  La table `species` stocke le nom de genre, d’espèce et le groupe
     taxonomique correspondant à chaque code d’espèce.
@@ -38,10 +37,10 @@ aucun lien n’est défini entre les tables.
 Ce projet est individuel et cadré. Il permet de démontrer que vous avez
 acquis les compétences suivantes :
 
-- découvrir et explorer une base de données
-- élaborer le schéma d’une base de données avec le package {dm}
-- réaliser une requête sur une base de données
-- utiliser le positionnement multidimensionnel
+-   découvrir et explorer une base de données
+-   élaborer le schéma d’une base de données avec le package {dm}
+-   réaliser une requête sur une base de données
+-   utiliser le positionnement multidimensionnel
 
 # Consignes
 
@@ -50,8 +49,8 @@ trois phases :
 
 1.  Vous élaborerez un schéma valide et optimal pour cette base de
     données proposée.
-2.  Vous réaliserez une requête sur cette base ar rapport à une question
-    biologique.
+2.  Vous réaliserez une requête sur cette base par rapport à une
+    question biologique.
 3.  Vous utiliserez le positionnement multidimensionnel afin d’observer
     les ressemblances et les différences entre les différentes
     parcelles.
