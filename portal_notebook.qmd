@@ -1,0 +1,349 @@
+---
+title: "Rongeurs dans un écosystème désertique à Portal, Arizona, USA"
+author: "___"
+date: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+editor: visual
+lang: fr
+editor_options: 
+  chunk_output_type: inline
+bibliography: bibliography/references.bib
+---
+
+# Introduction et but
+
+Le projet entrepris à Portal, Arizona, USA, a pour but d'étudier la biodiversité dans un écosystème désertique [@Ernest2020a]. Un recensement de rongeurs et d'autres organismes vivant dans le désert de Chihuahua est réalisé entre 1977 et 2002. Ce projet vise à étudier un écosystème désertique sur le long terme.
+
+Dans le cadre de ce bloc-notes, notre question est plus restreinte : est-ce que le type de parcelle (clôturée ou non) a une influence sur la répartition des rongeurs dans notre écosystème (en nous focalisant sur les données de 2002 exclusivement) ?
+
+# Matériel et méthodes
+
+Nous utilisons une base de données simplifiée [@Ernest2020b], issue de l'étude citée dans l'introduction. Cette base de données est accessible par lien direct (<https://ndownloader.figshare.com/files/11188550>) et est au format SQLite. Nous l'explorerons plus en détails dans la première partie de nos résultats.
+
+L'analyse est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {exploreit} version `r packageVersion("exploreit")`, ainsi que le package {dm} version `r packageVersion("dm")` dans la [SciViews Box 2023](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
+
+# Résultats
+
+Nous allons, dans un premier temps, créer un modèle de données valide pour relier les tables présentes dans la base de données. Ensuite, nous étudierons ces données grâce à une MDS.
+
+## Modèle des données
+
+```{r setup, include=FALSE}
+# Ceci est nécessaire pour les tests SDD, ne pas utiliser dans un "vrai" projet
+if (!"tools:tests" %in% search())
+  source(here::here("tests/tools_tests.R"), attach(NULL, name = "tools:tests"))
+
+# Configuration de l'environnement SciViews::R
+SciViews::R("explore", lang = "fr")
+library(dm)
+library(DBI)
+library(dbplyr)
+```
+
+Nous nous connectons à la base de données et l'explorons ci-dessous.
+
+<!--% Connectez-vous à la base de données, object `con`. -->
+
+```{r connect, record='RO', object='con', fun=dbIsValid}
+# Les données sont chargées directement depuis le web au format SQLite,
+# mais uniquement si elles ne sont pas déjà présentes.
+dir_create("data") # S'assurer que le dossier existe
+# Récupérer la base de données si pas déjà présente.
+# Effacer simplement le fichier portal_mammals.sqlite en cas de problème
+# et relancez ce code pour repartir sur la version initiale.
+if (!file_exists("data/portal_mammals.sqlite"))
+  download_file("https://ndownloader.figshare.com/files/11188550",
+    "data/portal_mammals.sqlite")
+
+# Connection à la base de données locale
+con <- ___(RSQLite::___, dbname = "___")
+```
+
+<!--% Créer un objet data model (dans `rodent_dm`) à partir de la connexion à la base de données. Ne récupérez pas les clés primaires et étrangères éventuelles dans cet objet et affichez son contenu. -->
+
+```{r dm, record='RO', object='rodent_dm', fun=names}
+rodent_dm <- ___(___, learn_keys = ___)
+rodent_dm
+```
+
+La base de données contient les tables suivantes :
+
+<!--% Explorez les tables dans cette base de données (listez-les). -->
+
+```{r explore, record='RN'}
+___
+```
+
+Les trois tables sont constituées comme suit :
+
+<!--% Complétez le code ci-dessous pour lister les champs de chaque table. -->
+
+```{r fields, record='RN'}
+cat("Champs de plots :\n")
+___(con, "plots")
+cat("Champs de species :\n")
+___(con, "species")
+cat("Champs de surveys :\n")
+___(con, "surveys")
+```
+
+Nos tables contiennent les données suivantes (10 premières lignes seulement) :
+
+<!--% Affichez les 10 premières lignes de chaque table pour explorer plus en détails. Nous utilisons pour ce faire un peu de code SQL. Ce code est prérempli pour vous. -->
+
+```{r tables, record='RNDFS'}
+dbGetQuery(con, "SELECT * FROM plots LIMIT 10")
+dbGetQuery(con, "SELECT * FROM species LIMIT 10")
+dbGetQuery(con, "SELECT * FROM surveys LIMIT 10")
+```
+
+La taille des trois tables (nombre de lignes) est la suivante :
+
+```{r tables_sizes, record='RN'}
+dm_nrow(rodent_dm)
+```
+
+<!--# TODO: commentaire concernant la structure des tables. -->
+
+```{r tablescomment, output='asis'}
+select_answer(r"-{
+[] -   Cette base de données contient trois jeux de données.
+[] -   Cette base de données contient trois tables.
+
+[] -   Les tables sont 1NF (hors clés primaires, étangères et liens entre elles).
+[] -   Une ou plusieurs tables ne sont pas 1NF (hors clés primaires, étangères et liens entre elles).
+
+[] -   Les tables sont 2NF (hors clés primaires, étangères et liens entre elles).
+[] -   Une ou plusieurs tables ne sont pas 1NF (hors clés primaires, étangères et liens entre elles).
+
+[] -   Les tables sont 3NF (hors clés primaires, étangères et liens entre elles).
+[] -   Une ou plusieurs tables ne sont pas 1NF (hors clés primaires, étangères et liens entre elles).
+
+[] -   Tous les champs sont parfaitement encodés dans toutes les tables.
+[] -   Les champs `genus` et `species` auraient dû être encodés en un seul champ reprenant le genre et l'espèce dans la table "species".
+[] -   Les champs `genus` et `species` auraient aussi pu être encodés en un seul champ reprenant le genre et l'espèce dans la table "species". La séparation en deux champs distincts facilite une éventuelle selection au genre seulement.
+[] -   Les champs `month`, `day` et `year` auraient dû être encodés en un seul champ `date` dans la table "surveys".
+[] -   Les champs `month`, `day` et `year` auraient aussi pu être encodés en un seul champ `date` dans la table "surveys". Un encodage séparé facilite toutefois la sélection de certaines années ou certains mois.}-")
+```
+
+Nous ajoutons les clés primaires et étrangères dans notre modèle de données. D'abord les clés primaires...
+
+<!--% Identifiez les candidats potentiels de clés primaires. Ensuite, ajoutez les clés primaires à chaque table et affichez votre modèle de données en l'état. -->
+
+```{r primary_keys, record='RO', object='rodent_dm1', fun=dm_get_all_pks}
+# Exploration des candidats potentiels de clés primaires
+___(rodent_dm, "plots")
+___(rodent_dm, "species")
+___(rodent_dm, "surveys")
+# Ajout des clés primaires
+rodent_dm %>.%
+  ___(., plots, ___) %>.%
+  ___(., species, ___) %>.%
+  ___(., surveys, ___) ->
+  rodent_dm1
+# Représentation de la structure du modèle de données
+dm_draw(rodent_dm1, view_type = "all")
+```
+
+... ensuite les clés étrangères.
+
+<!--% Explorez les candidats potentiels de clés étrangères. Ensuite, ajoutez-les à chaque table. Vos trois tables doivent être liées, mais il ne peut pas y avoir de dépendances cycliques. Représentez à nouveau votre modèle de données. -->
+
+```{r foreign_keys, record='RO', object='rodent_dm2', fun=dm_get_all_fks}
+# Exploration des candidats potentiels comme clés étrangères
+___(rodent_dm1, "___", "___")
+___(rodent_dm1, "___", "___")
+# Ajout des clés étrangères
+rodent_dm1 %>.%
+  ___(., ___, ___,  ___) %>.%
+  ___(., ___, ___, ___) ->
+  rodent_dm2
+# Représentation de la structure du modèle de données
+dm_draw(rodent_dm2, view_type = "all")
+```
+
+## Extraction des données d'intérêt
+
+Nous nous intéressons aux rongeurs uniquement recensés en 2002, dans l'ensemble des parcelles à l'exception des parcelles clôturées contre les rats kangourous à court terme. Nous calculons le nombre d'individus observés dans chaque parcelle pour chaque espèce.
+
+<!--% En partant de `rodent_dm2`, effectuez une extraction de la table correspondant au choix indiqué ci-dessus. Créez un tableau unique à partir du résultat mais ne collectez PAS encore les données finales. Nommez cet objet `rodent_red`. -->
+
+```{r filter, record='RO', object='rodent_red', fun=sql_render}
+rodent_dm2 %>.%
+  dm_filter(.,
+    ___ = ___,
+    ___ = ___,
+    ___ = ___) %>.%
+  ___(., surveys, plots, species) ->
+  rodent_red
+rodent_red
+```
+
+<!--# Notez bien ceci : jusqu'ici les données sont toujuors dans la base et n'ont pas été extraites. Les sorties que vous voyez concernent uniquement les premiers enregistrements à titre d'illustration de ce que la requête va extraire. Par conséquent, R est incapable de déterminer le nombre de lignes que le tableau final aura et l'indique avec "?? x 13" car il sait quand même que ce tableau aura 13 colonnes. Ce n'est qu'en utilisant `collect()` ou `collect_dtx()` que l'on va extraire l'ensemble des données issues du filtre et matérialiser le tableau final. C'est très pratique car la mise au point de la requête se fait plus vite avec une prévisualisation à chaque fois du début du résultat (donc une prévisualisation rapide même si le travail ensuite est conséquent). -->
+
+Ces données sont résumées en calculant le nombre d'individus par espèce, par parcelle et par type de parcelle.
+
+<!--% En partant de `rodent_red`, dénombrez en fonction du type de parcelles (plot_type), les individus pour chaque espèce (species_id) et dans chaque parcelle (plot_id). Collectez le résultat dans l'objet `rodent_sum` et affichez-en les premières et dernière lignes à l'aide de `tabularise()`. -->
+
+```{r summarise, record='RODFS', object='rodent_sum'}
+rodent_red %>.%
+  group_by(., ___) %>.%
+  count(.) %>.%
+  collect_dtx(.) ->
+  rodent_sum
+tabularise$headtail(rodent_sum)
+```
+
+<!--# Ici, comme nous avons utilisé `collect_dtx()`, nous avons bien le tableau final complet. -->
+
+<!-- Votre requête est réalisée. Déconnectez-vous de la base de données. -->
+
+```{r disconnect, record='RO', object='con', fun=dbIsValid}
+___
+```
+
+## Description et transformation des données
+
+Voici la répartition du nombre d'observations en fonction de chaque espèce de rongeur.
+
+<!--% Réalisez des boites de dispersion horizontales du nombre d'observation par espèce. Nommez l'axe horizontal "Observations" et l'axe vertical "Espèces". -->
+
+```{r plot, record='RNP', arg='mapping,labels'}
+rodent_sum %>.%
+  chart(., ___) +
+    ___() +
+    ___() +
+    labs(x = "___", y = "___")
+```
+
+<!--% Décrivez ce graphique.-->
+
+```{r plotcomment, output='asis'}
+select_answer(r"-{
+[] -   Les espèces de rongeurs sont observées avec une fréquence relativement similaire.
+[] -   Les fréquences d'observation des différentes espèces de rongeurs sont très différentes, mais les écarts restent encore acceptables.
+[] -   Les fréquences d'observation des différentes espèces de rongeurs sont extrêmement différentes, une transformation pour donner moins d'importance aux espèces les plus abondantes est indispensable.}-")
+```
+
+Nous transformons nos données en un tableau espèces par stations pour notre analyse MDS.
+
+<!-- Le tableau que vous avez obtenu nommé `rodent_sum` doit être remanié pour obtenir un tableau de type "espèces x stations" où chaque ligne correspond à une station et chaque colonne à une espèce. Faites cette transformation et placez-là dans `rodent_wider`. Affichez-le ensuite en utilisant `tabularise()`. -->
+
+```{r wider, record='RODFS', object='rodent_wider'}
+rodent_wider <- ___(___, names_from = "___",
+  values_from = "___", values_fill = 0)
+tabularise(rodent_wider)
+```
+
+## Positionnement multidimensionnel
+
+### MDS métrique
+
+Nous tentons d'abord une MDS métrique.
+
+<!--% Calculez une matrice de distance basée sur le nombre d'individus de chaque espèce par station. Nommez cet objet `rodent_dist`. Nous souhaitons donner plus d'importance aux espèces les plus présentes. Choisissez l'indice le plus pertinent dans ce contexte. -->
+
+```{r dist, record='ROA', object='rodent_dist', arg='class,metric,Size,transpose,scale'}
+rodent_wider  %>.%
+  ___ ->
+  rodent_dist
+```
+
+<!-- Réalisez une MDS métrique et vérifiez sa pertinence à l'aide d'une métrique adéquate. -->
+
+```{r mds, record='ROP', object='rodent_mds', arg='call,GOF'}
+set.seed(241)
+rodent_mds <- ___
+___(rodent_mds)
+```
+
+<!--% Que pensez-vous de cette MDS métrique ?. -->
+
+
+```{r mdscomment, output='asis'}
+select_answer(r"-{
+[] -   La "goodness-of-fit" est excellente. Nous conservons notre analyse.
+[] -   La "goodness-of-fit" est bonne, nous pouvons conserver cette MDS mais nous tentons quand même une MDS non métrique.
+[] -   La "goodness-of-fit" n'est pas très bonne, il vaut mieux tenter une MDS non métrique.
+[] -   La "goodness-of-fit" est désastreuse. La MDS métrique est inutilisable ici. Nous tentons une MDS non métrique.}-")
+```
+
+### MDS non métrique
+
+Nous effectuons ensuite une MDS non métrique de Kruskal.
+
+<!--% Effectuez maintenant une MDS non métrique (Kruskal) et estimez son adéquation à l'aide de la ou des métriques adéquates. -->
+
+```{r mds2, record='ROP', object='rodent_mds2', arg='call,distcall,stress'}
+set.seed(936)
+rodent_mds2 <- ___
+___(rodent_mds2)
+```
+
+<!--% Interprétez ce résultat en fonction des valeurs de R^2. -->
+
+```{r mds2comment, output='asis'}
+select_answer(r"-{
+[] -   Les deux R^2^ sont très bons. Notre MDS non métrique est donc très satisfaisante.
+[] -   Le R^2^ non métrique est excellent. Le R^2^ linéaire est un rien moins bon. Notre MDS non métrique est satisfaisante mais avec des petites distortions des distances.
+[] -   Les deux R^2^ sont moyens. La MDS non métrique est quand même analysable.
+[] -   Les deux R^2^ sont trop faible. La MDS non métrique ne peut pas être interprétée.}-")
+```
+
+### Diagramme de Shepard
+
+<!--% Tracez le diagramme de Shepard de votre MDS non métrique (utilisez l'objet `rodent_sh`). -->
+
+```{r shepard, record='ROP', object='rodent_sh', arg='class,names'}
+rodent_sh <- ___
+___(rodent_sh) +
+  labs(x = "Dissimilarité observée", y = "Distance sur l'ordination")
+```
+
+<!--% Interprétez le diagramme de Shepard. -->
+
+```{r shepardcomment, output='asis'}
+select_answer(r"-{
+[] -   Les points sont proches de la courbe de stress. La MDS est valide.
+[] -   Les points sont relativement éloignés de la courbe de stress. La MDS est quand même utilisable.
+[] -   Les points sont très éloignés de la courbe de stress. La MDS est inutilisable.
+
+[] -   La courbe de stress est pratiquement linéaire. Les distances sont très bien respectées.
+[] -   La courbe de stress est plutôt curvilinéaire. Les distances sont relativement bien respectées.
+[] -   La courbe de stress n'est pas du tout linéaire. Les distances ne sont pas respectées.}-")
+```
+
+### Graphique de la MDS non métrique
+
+<!--% Réalisez le graphique de votre MDS non métrique. Labélisez les points avec leur identifiant de parcelle `plot_id`. Mettez en évidence les types de traitements appliqués grâce à la couleur. -->
+
+```{r mds2chart, record='RNP', arg='labels'}
+___
+```
+
+<!--% Interprétez ce graphique. -->
+
+```{r mds2chartcomment, output='asis'}
+select_answer(r"-{
+[] -   Les stations forment un groupe relativement cohérent. Il n'y a pas de tendance en fonction du type d'exclos.
+[] -   Des tendances en fonction du type d'exclos se dessinent.
+  
+[] -   Les exclos rongeurs se séparent très nettement à la droite du graphique.
+[] -   Les exclos "spectab" sont séparés du reste.
+[] -   Les exclos pour les rat-kangourous à long terme sont séparés du reste.
+[] -   Les exclos "Spectab" et les exclos pour rat-kangourous à long terme ne se distinguent pas fondamentalement des parcelles contrôle sans exclos.}-")
+```
+
+# Discussion et conclusions
+
+<!--% Concluez votre travail en deux phrases, l'une concernant l'intérêt d'utiliser une base de données ici et l'autre sur l'utilisation d'une MDS pour répondre à la question de recherche investiguée dans ce bloc-notes. -->
+
+...Votre discussion ici...
+
+# Références
+
+<!--% Ne rien indiquer ici. La référence bibliographique se placera automatiquement ici.-->
