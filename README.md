@@ -34,7 +34,7 @@ Complétez le document `portal_notebook.qmd`. Le travail va se décomposer en tr
 2. Vous réaliserez une requête sur cette base par rapport à une question biologique
 3. Vous utiliserez le positionnement multidimensionnel pour observer les ressemblances et les différences entre les différentes parcelles.
 
-N'oubliez pas de faire un "Rendu" du document en HTML à la fin du travail pour vérifier que tout fonctionne bien, et corrigez les erreurs éventuelles rencontrées à ce stade avant de clôturer votre travail (très important !) Vous avez une batterie de tests à votre disposition pour des vérifications plus poussées de vos résultats (onglet "Construire" -> bouton "Construire tout") Vérifiez également que votre dernier commit a bien été pushé sur GitHub avant la deadline.
+N'oubliez pas de faire un "Rendu" du document en HTML à la fin du travail pour vérifier que tout fonctionne bien, et corrigez les erreurs éventuelles rencontrées à ce stade avant de clôturer votre travail (très important ! Sans quoi il ne sera pas possible d'attribuer des points à votre travail). Vous avez une batterie de tests à votre disposition pour des vérifications plus poussées de vos résultats (onglet "Construire" -> bouton "Construire tout") Vérifiez également que votre dernier commit a bien été pushé sur GitHub avant la deadline.
 
 # Références
 

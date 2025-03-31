@@ -24,7 +24,7 @@ Dans le cadre de ce bloc-notes, notre question est plus restreinte : est-ce que
 
 Nous utilisons une base de données simplifiée [@Ernest2020b], issue de l'étude citée dans l'introduction. Cette base de données est accessible par lien direct (<https://ndownloader.figshare.com/files/11188550>) et est au format SQLite. Nous l'explorerons plus en détails dans la première partie de nos résultats.
 
-L'analyse est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {exploreit} version `r packageVersion("exploreit")`, ainsi que le package {dm} version `r packageVersion("dm")` dans la [SciViews Box 2023](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
+L'analyse est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {exploreit} version `r packageVersion("exploreit")`, ainsi que le package {dm} version `r packageVersion("dm")` dans la [SciViews Box 2024](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
 
 # Résultats
 
@@ -189,7 +189,7 @@ Ces données sont résumées en calculant le nombre d'individus par espèce, par
 
 <!--% En partant de `rodent_red`, dénombrez en fonction du type de parcelles (plot_type), les individus pour chaque espèce (species_id) et dans chaque parcelle (plot_id). Collectez le résultat dans l'objet `rodent_sum` et affichez-en les premières et dernière lignes à l'aide de `tabularise()`. -->
 
-```{r summarise, record='RODFS', object='rodent_sum'}
+```{r summarise, warning=FALSE, record='RODFS', object='rodent_sum'}
 rodent_red %>.%
   group_by(., ___) %>.%
   count(.) %>.%
@@ -212,7 +212,7 @@ Voici la répartition du nombre d'observations en fonction de chaque espèce de 
 
 <!--% Réalisez des boites de dispersion horizontales du nombre d'observation par espèce. Nommez l'axe horizontal "Observations" et l'axe vertical "Espèces". -->
 
-```{r plot, record='RNP', arg='mapping,labels'}
+```{r plot, record='RNCS'}
 rodent_sum %>.%
   chart(., ___) +
     ___() +
@@ -233,7 +233,7 @@ Nous transformons nos données en un tableau espèces par stations pour notre an
 
 <!-- Le tableau que vous avez obtenu nommé `rodent_sum` doit être remanié pour obtenir un tableau de type "espèces x stations" où chaque ligne correspond à une station et chaque colonne à une espèce. Faites cette transformation et placez-là dans `rodent_wider`. Affichez-le ensuite en utilisant `tabularise()`. -->
 
-```{r wider, record='RODFS', object='rodent_wider'}
+```{r wider, warning=FALSE, record='RODFS', object='rodent_wider'}
 rodent_wider <- ___(___, names_from = "___",
   values_from = "___", values_fill = 0)
 tabularise(rodent_wider)
@@ -262,7 +262,6 @@ ___(rodent_mds)
 ```
 
 <!--% Que pensez-vous de cette MDS métrique ?. -->
-
 
 ```{r mdscomment, output='asis'}
 select_answer(r"-{
@@ -322,7 +321,8 @@ select_answer(r"-{
 <!--% Réalisez le graphique de votre MDS non métrique. Labélisez les points avec leur identifiant de parcelle `plot_id`. Mettez en évidence les types de traitements appliqués grâce à la couleur. -->
 
 ```{r mds2chart, record='RNP', arg='labels'}
-___
+___  +
+  labs(color = "Treatment")
 ```
 
 <!--% Interprétez ce graphique. -->
