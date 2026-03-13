@@ -270,12 +270,14 @@ test_that("Chunks 'mds2chart', 'mds2chartcomment' : diagramme de Shepard", {
   # cette aide plus tard dans le travail de groupe ou les interrogations !
 })
 
-test_that("La partie discussion et conclusion est-elle remplie ?", {
-  expect_true(!(rmd_select(portal, by_section("Discussion et conclusions")) |>
-      as_document() |> grepl("...Votre discussion ici...", x = _,
-        fixed = TRUE) |> any()))
-  # La discussion et les conclusions ne sont pas faites
-  # Remplacez "...Votre discussion ici..." par vos phrases de commentaires
-  # libres (à noter que le contenu de cette section n'est pas évalué
-  # automatiquement, mais il le sera par vos enseignants).
+test_that("Chunk 'portaldiscu_comment' : discussion et conclusions", {
+  expect_true(is_identical_to_ref("portaldiscu_comment"))
+  # La discussion et conclusion de 'portaldiscu_comment' est (partiellement) fausse.
+  # Vous devez cochez les phrases qui décrivent les graphiques et la table d'un
+  # 'x' entre les crochets [] -> [x]. Ensuite, vous devez recompiler la version
+  # HTML du bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les
+  # résultats.
+  # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
+  # cette aide plus tard dans le travail de groupe ou les interrogations !
 })
+
