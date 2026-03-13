@@ -1,21 +1,23 @@
 # Rongeurs dans un écosystème désertique à Portal, Arizona, USA
 
-La base de données traitée dans ce projet (Ernest et al. 2020a) est une version simplifiée issue d’un étude portant sur le suivi à long terme d’un écosystème désertique dans le désert du Chihuahua proche de la ville de Portal en Arizona, USA (Ernest et al. 2020b).
+La base de données traitée dans ce projet (Ernest et al. 2020a) est une version simplifiée issue d’une étude portant sur le suivi à long terme d’un écosystème désertique dans le désert du Chihuahua proche de la ville de Portal en Arizona, USA (Ernest et al. 2020b).
 
 La zone d'étude s'étend sur 20 hectares et est composée de 24 parcelles de 0.25 ha chacune (50m par 50m). La base de données est constituée de trois tables :
 
-1. La table "plots" reprend des informations sur les traitements appliqués sur les parcelles :
+1. La table `"plots"` reprend des informations sur les traitements appliqués sur les parcelles :
     - parcelles témoin (`Control`),
     - parcelles clôturées pour exclure tous les rongeurs (`Rodent Exclosure`)
     - parcelles clôturées afin d'exclure à long terme les rats-kangourous (`Long-term Krat Exclosure`)
     - parcelles clôturées pour exclure à court terme les rats-kangourous (`Short-term Krat Exclosure`)
     - parcelles clôturées pour exclure spécifiquement *Dipdomys spectabilis*, une espèce de rat-kangourou (`Spectab Exclosure`)
 
-2. La table "species" stocke le nom de genre, d’espèce et le groupe taxonomique correspondant à chaque code d’espèce.
+2. La table `"species"` stocke le nom de genre, d’espèce et le groupe taxonomique correspondant à chaque code d’espèce.
 
-3. La table "surveys" collecte les informations relatives aux individus capturés.
+3. La table `"surveys"` collecte les informations relatives aux individus capturés.
 
-Vous noterez que le schéma de cette base de données est incomplet car aucun lien n'est défini entre les tables. Ce projet correspond au template <https://github.com/BioDataScience-Course/B09Ia_portalr>.
+Vous noterez que le schéma de cette base de données est incomplet car aucun lien n'est défini entre les tables.
+
+Ce projet correspond au template <https://github.com/BioDataScience-Course/B09Ia_portalr>.
 
 ## Objectifs
 
